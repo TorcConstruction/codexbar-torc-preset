@@ -1,57 +1,46 @@
 # CodexBar Torc preset
 
-Shareable macOS setup for [CodexBar](https://github.com/steipete/CodexBar) with the Torc Construction display prefs:
+Shareable macOS setup for [CodexBar](https://github.com/steipete/CodexBar) with Torc Construction’s **lean overview**.
 
 | Setting | Value |
 |--------|--------|
-| Usage bars | **Used %** (fills up like Claude’s meter, not a fuel tank) |
-| Dollars / cost | **Off** |
-| Menu bar | **Percent** |
-| Providers | **Claude → Cursor → Codex** (Codex at bottom) |
-| Icons | **Separate** Claude / Cursor / Codex with **provider name** + % |
+| Menu bar | **One merged icon** |
+| Overview | Claude → Cursor → Codex (Codex last) |
+| Bars | **Used %** (fill toward 100%, Claude-style) |
+| Dollars / spend | **Off** |
+| Agent sessions | **Off** |
+| Accents | Claude `#D97757`, Cursor `#3B82F6`, Codex `#10A37F` |
+| Clutter rows | Credits / Spark / Daily Routines / sessions hidden |
 
-CodexBar itself stays upstream (`brew install --cask codexbar`). This repo only installs it and applies prefs.
+CodexBar itself stays upstream (`brew install --cask codexbar`). This repo only installs it and applies prefs. **No logins or secrets** are stored here.
 
 ## Install (any Mac)
 
 ```bash
-brew install --cask codexbar   # if you want to peek first
 git clone https://github.com/TorcConstruction/codexbar-torc-preset.git
 cd codexbar-torc-preset
 ./install.sh
 ```
 
-Or one-liner after clone:
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/TorcConstruction/codexbar-torc-preset/main/install.sh)"
-```
-
-> One-liner needs the raw `install.sh` to be self-contained for prefs; prefer clone + `./install.sh` so `config.json` ships with it.
-
 ## After install — sign in once per Mac
 
-This preset does **not** copy logins (by design, safe to share).
+1. **Claude** — `claude auth login` or stay signed in at [claude.ai](https://claude.ai). If CodexBar says OAuth missing, sync Keychain → `~/.claude/.credentials.json` (Claude Code keeps tokens in Keychain).
+2. **Cursor** (GrokBot lane) — sign in at [cursor.com](https://cursor.com), grant CodexBar **Full Disk Access** if asked, then connect Cursor in CodexBar.
+3. **Codex** — existing ChatGPT / Codex session.
 
-1. **Claude** — `claude auth login` or stay signed in at [claude.ai](https://claude.ai)
-2. **Cursor** (Grady / GrokBot pool) — sign in at [cursor.com](https://cursor.com), enable CodexBar Full Disk Access if asked, then CodexBar → Add / switch account → Cursor
-3. **Codex** — your existing ChatGPT / Codex session
+## What you should see
 
-## What friends get
+Click the menu bar icon → **Overview** with three short cards (Claude, Cursor, Codex). Used-% bars and reset timing. No spend header, no scroll of junk rows.
 
-- Same bar behavior and provider order  
-- Their own Claude / Cursor / Codex accounts  
-- No Torc credentials in this repo  
+Hover session/weekly tips on bars cannot be turned off upstream. Ignore them; Overview is the source of truth. Open an individual provider for deeper detail when you want it.
 
 ## Uninstall preset only
 
-Delete `~/.config/codexbar/config.json` overrides as you like, or reinstall CodexBar and reset prefs:
-
 ```bash
 defaults delete com.steipete.codexbar
+# optional: rm ~/.config/codexbar/config.json
+brew uninstall --cask codexbar
 ```
-
-Remove the app: `brew uninstall --cask codexbar`
 
 ## License
 

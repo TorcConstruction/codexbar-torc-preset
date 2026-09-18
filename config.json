@@ -1,17 +1,38 @@
 {
+  "version": 1,
   "providersSortedAlphabetically": false,
   "providers": [
     {
       "id": "claude",
-      "enabled": true
+      "enabled": true,
+      "accentColor": "#D97757",
+      "hiddenUsageItemIDs": [
+        "section:credits",
+        "section:codex-reset-credits",
+        "metric:claude-routines",
+        "metric:claude-code-sessions"
+      ]
     },
     {
       "id": "cursor",
-      "enabled": true
+      "enabled": true,
+      "accentColor": "#3B82F6",
+      "hiddenUsageItemIDs": [
+        "section:credits",
+        "section:codex-reset-credits"
+      ]
     },
     {
       "id": "codex",
-      "enabled": true
+      "enabled": true,
+      "accentColor": "#10A37F",
+      "hiddenUsageItemIDs": [
+        "section:credits",
+        "section:codex-reset-credits",
+        "metric:codex-spark",
+        "metric:codex-spark-weekly",
+        "metric:codex-monthly-credit"
+      ]
     }
   ]
 }

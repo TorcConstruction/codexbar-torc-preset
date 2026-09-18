@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# CodexBar Torc preset installer
-# Installs CodexBar and applies the Torc display preset (used-% bars, no $, Claude/Cursor/Codex order).
-# Does NOT copy login sessions. Each Mac signs into Claude / Cursor / Codex once after install.
+# CodexBar Torc lean-overview preset
+# Used-% bars, merged overview, Claude→Cursor→Codex, accents, no $.
+# Does NOT copy login sessions.
 set -euo pipefail
 
 PRESET_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -21,81 +21,94 @@ echo "==> Quitting CodexBar if running"
 killall CodexBar 2>/dev/null || true
 sleep 1
 
-echo "==> Applying preferences"
-# Core toggles
+echo "==> Applying lean Torc preferences"
 defaults write "$DOMAIN" usageBarsShowUsed -bool true
 defaults write "$DOMAIN" lastObservedUsageBarsShowUsed -bool true
 defaults write "$DOMAIN" lastSwitcherUsageBarsShowUsed -bool true
 defaults write "$DOMAIN" tokenCostUsageEnabled -bool false
 defaults write "$DOMAIN" costSummaryDisplayStyle -string off
 defaults write "$DOMAIN" costSummaryDisplayStyleRaw -string off
+defaults write "$DOMAIN" costSummaryInlineEnabled -bool false
+defaults write "$DOMAIN" tokenCostMenuSectionEnabled -bool false
+defaults write "$DOMAIN" costHistoryChartEnabled -bool false
+defaults write "$DOMAIN" agentSessionsEnabled -bool false
+defaults write "$DOMAIN" showOptionalCreditsAndExtraUsage -bool false
+defaults write "$DOMAIN" claudeDailyRoutinesUsageVisible -bool false
+defaults write "$DOMAIN" claudeModelScopedWeeklyUsageVisible -bool false
+defaults write "$DOMAIN" codexSparkUsageVisible -bool false
+defaults write "$DOMAIN" showCodexOpenAIWebExtras -bool false
 defaults write "$DOMAIN" menuBarDisplayMode -string percent
 defaults write "$DOMAIN" menuBarDisplayModeRaw -string percent
+defaults write "$DOMAIN" menuBarLayoutGapRaw -string tight
+defaults write "$DOMAIN" menuBarLayoutSizeRaw -string small
 defaults write "$DOMAIN" providersSortedAlphabetically -bool false
-defaults write "$DOMAIN" showOptionalCreditsAndExtraUsage -bool false
-defaults write "$DOMAIN" costHistoryChartEnabled -bool false
-defaults write "$DOMAIN" "NSStatusItem VisibleCC codexbar-merged" -bool true
-# Provider order: Claude, Cursor, Codex (Codex at bottom)
 defaults write "$DOMAIN" lastProviderOrder -array claude cursor codex
 defaults write "$DOMAIN" _providerOrder -array claude cursor codex
+defaults write "$DOMAIN" mergedOverviewSelectedProviders -array claude cursor codex
+defaults write "$DOMAIN" mergedMenuLastSelectedWasOverview -bool true
+defaults write "$DOMAIN" "NSStatusItem VisibleCC codexbar-merged" -bool true
 
-echo "==> Writing config (enabled providers only; no secrets)"
+# Drop the old separate-icon layout if a prior preset left it behind
+defaults delete "$DOMAIN" mergeIcons 2>/dev/null || true
+defaults delete "$DOMAIN" lastMergeIcons 2>/dev/null || true
+defaults delete "$DOMAIN" menuBarLayoutPrimaryLabel 2>/dev/null || true
+defaults delete "$DOMAIN" storedMenuBarLayout 2>/dev/null || true
+
+defaults write "$DOMAIN" providerAccentColors -dict \
+  claude "#D97757" \
+  cursor "#3B82F6" \
+  codex "#10A37F"
+
+echo "==> Writing config (enabled providers + hidden clutter; no secrets)"
 mkdir -p "$CONFIG_DIR"
-# Merge: if config exists, enable our three and set order; else copy preset
-if [[ -f "$CONFIG_DIR/config.json" ]]; then
-  python3 - "$CONFIG_DIR/config.json" "$PRESET_DIR/config.json" <<'PY'
+python3 - "$CONFIG_DIR/config.json" "$PRESET_DIR/config.json" <<'PY'
 import json, sys
 from pathlib import Path
-cur=json.loads(Path(sys.argv[1]).read_text())
-preset=json.loads(Path(sys.argv[2]).read_text())
-want=["claude","cursor","codex"]
-by={p.get("id"): dict(p) for p in cur.get("providers", []) if p.get("id")}
+dest, src = Path(sys.argv[1]), Path(sys.argv[2])
+preset = json.loads(src.read_text())
+want = ["claude", "cursor", "codex"]
+if dest.exists():
+    cur = json.loads(dest.read_text())
+else:
+    cur = {"version": 1, "providers": []}
+by = {p.get("id"): dict(p) for p in cur.get("providers", []) if p.get("id")}
+preset_by = {p["id"]: p for p in preset.get("providers", [])}
 for i in want:
-    p=by.get(i, {"id": i})
-    p["enabled"]=True
-    # strip secrets if any
+    p = by.get(i, {"id": i})
+    p["enabled"] = True
+    for field in ("accentColor", "hiddenUsageItemIDs"):
+        if i in preset_by and field in preset_by[i]:
+            p[field] = preset_by[i][field]
     for k in list(p):
-        if any(s in k.lower() for s in ("key","token","secret","cookie","credential","auth")) and k != "id":
+        if any(s in k.lower() for s in ("key", "token", "secret", "cookie", "credential", "auth")) and k != "id":
             p.pop(k, None)
-    by[i]=p
-# disable nothing else automatically — only ensure ours on
-ordered=[]
-for i in want:
-    ordered.append(by.pop(i))
+    by[i] = p
+ordered = [by.pop(i) for i in want]
 ordered.extend(by.values())
-cur["providers"]=ordered
-cur["providersSortedAlphabetically"]=False
-Path(sys.argv[1]).write_text(json.dumps(cur, indent=2)+"\n")
-print("merged", sys.argv[1])
+cur["providers"] = ordered
+cur["providersSortedAlphabetically"] = False
+cur["version"] = cur.get("version", 1)
+dest.write_text(json.dumps(cur, indent=2) + "\n")
+print("wrote", dest)
 PY
-else
-  cp "$PRESET_DIR/config.json" "$CONFIG_DIR/config.json"
-  chmod 600 "$CONFIG_DIR/config.json"
-fi
-
-
-echo "==> Separate icons with provider names"
-defaults write "$DOMAIN" mergeIcons -bool false
-defaults write "$DOMAIN" lastMergeIcons -bool false
-defaults write "$DOMAIN" menuBarLayoutPrimaryLabel -string providerName
-defaults write "$DOMAIN" storedMenuBarLayout -string '{"lines":[[{"icon":{}},{"providerName":{}},{"space":{}},{"percent":{"window":"automatic"}}]]}'
-defaults delete "$DOMAIN" "NSStatusItem VisibleCC codexbar-merged" 2>/dev/null || true
+chmod 600 "$CONFIG_DIR/config.json"
 
 echo "==> Launching CodexBar"
-open -a CodexBar || open /Applications/CodexBar.app
+open /Applications/CodexBar.app 2>/dev/null || open -a CodexBar
 
 cat <<'MSG'
 
-Done. CodexBar preset applied:
-  • Bars = used % (fills up toward 100%)
-  • Dollars / cost summary off
-  • Providers: Claude → Cursor → Codex (Codex at bottom)
+Done. Torc lean CodexBar preset applied:
+  • Merged menu bar icon / Overview
+  • Claude → Cursor → Codex
+  • Used-% bars (fill toward 100%)
+  • Dollars / agent sessions / clutter rows off
+  • Provider accent colors on
 
 Sign-in (each machine, once):
-  1. Claude: run `claude auth login` in Terminal, or sign in at claude.ai
-  2. Cursor: sign in at cursor.com in Chrome, then CodexBar → Add / switch account → Cursor
-     (grant CodexBar Full Disk Access if prompted)
-  3. Codex: already uses your ChatGPT/Codex login when present
+  1. Claude: `claude auth login` or claude.ai
+  2. Cursor: cursor.com + Full Disk Access if prompted
+  3. Codex: existing ChatGPT / Codex session
 
-Friends: same install.sh. They use their own accounts — this repo never stores sessions.
+Friends use the same install.sh with their own accounts. No secrets in this repo.
 MSG

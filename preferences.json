@@ -5,43 +5,28 @@
   "tokenCostUsageEnabled": false,
   "costSummaryDisplayStyle": "off",
   "costSummaryDisplayStyleRaw": "off",
+  "costSummaryInlineEnabled": false,
+  "tokenCostMenuSectionEnabled": false,
+  "costHistoryChartEnabled": false,
+  "agentSessionsEnabled": false,
+  "showOptionalCreditsAndExtraUsage": false,
+  "claudeDailyRoutinesUsageVisible": false,
+  "claudeModelScopedWeeklyUsageVisible": false,
+  "codexSparkUsageVisible": false,
+  "showCodexOpenAIWebExtras": false,
   "menuBarDisplayMode": "percent",
   "menuBarDisplayModeRaw": "percent",
+  "menuBarLayoutGapRaw": "tight",
+  "menuBarLayoutSizeRaw": "small",
   "providersSortedAlphabetically": false,
-  "lastProviderOrder": [
-    "claude",
-    "cursor",
-    "codex"
-  ],
-  "_providerOrder": [
-    "claude",
-    "cursor",
-    "codex"
-  ],
-  "showOptionalCreditsAndExtraUsage": false,
-  "costHistoryChartEnabled": false,
+  "lastProviderOrder": ["claude", "cursor", "codex"],
+  "_providerOrder": ["claude", "cursor", "codex"],
+  "mergedOverviewSelectedProviders": ["claude", "cursor", "codex"],
+  "mergedMenuLastSelectedWasOverview": true,
   "NSStatusItem VisibleCC codexbar-merged": true,
-  "mergeIcons": false,
-  "lastMergeIcons": false,
-  "menuBarLayoutPrimaryLabel": "providerName",
-  "storedMenuBarLayout": {
-    "lines": [
-      [
-        {
-          "icon": {}
-        },
-        {
-          "providerName": {}
-        },
-        {
-          "space": {}
-        },
-        {
-          "percent": {
-            "window": "automatic"
-          }
-        }
-      ]
-    ]
+  "providerAccentColors": {
+    "claude": "#D97757",
+    "cursor": "#3B82F6",
+    "codex": "#10A37F"
   }
 }
