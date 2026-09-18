@@ -1,0 +1,17 @@
+{
+  "providersSortedAlphabetically": false,
+  "providers": [
+    {
+      "id": "claude",
+      "enabled": true
+    },
+    {
+      "id": "cursor",
+      "enabled": true
+    },
+    {
+      "id": "codex",
+      "enabled": true
+    }
+  ]
+}

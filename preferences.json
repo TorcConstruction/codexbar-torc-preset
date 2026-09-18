@@ -1,0 +1,24 @@
+{
+  "usageBarsShowUsed": true,
+  "lastObservedUsageBarsShowUsed": true,
+  "lastSwitcherUsageBarsShowUsed": true,
+  "tokenCostUsageEnabled": false,
+  "costSummaryDisplayStyle": "off",
+  "costSummaryDisplayStyleRaw": "off",
+  "menuBarDisplayMode": "percent",
+  "menuBarDisplayModeRaw": "percent",
+  "providersSortedAlphabetically": false,
+  "lastProviderOrder": [
+    "claude",
+    "cursor",
+    "codex"
+  ],
+  "_providerOrder": [
+    "claude",
+    "cursor",
+    "codex"
+  ],
+  "showOptionalCreditsAndExtraUsage": false,
+  "costHistoryChartEnabled": false,
+  "NSStatusItem VisibleCC codexbar-merged": true
+}
