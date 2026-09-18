@@ -73,6 +73,14 @@ else
   chmod 600 "$CONFIG_DIR/config.json"
 fi
 
+
+echo "==> Separate icons with provider names"
+defaults write "$DOMAIN" mergeIcons -bool false
+defaults write "$DOMAIN" lastMergeIcons -bool false
+defaults write "$DOMAIN" menuBarLayoutPrimaryLabel -string providerName
+defaults write "$DOMAIN" storedMenuBarLayout -string '{"lines":[[{"icon":{}},{"providerName":{}},{"space":{}},{"percent":{"window":"automatic"}}]]}'
+defaults delete "$DOMAIN" "NSStatusItem VisibleCC codexbar-merged" 2>/dev/null || true
+
 echo "==> Launching CodexBar"
 open -a CodexBar || open /Applications/CodexBar.app
 

@@ -20,5 +20,28 @@
   ],
   "showOptionalCreditsAndExtraUsage": false,
   "costHistoryChartEnabled": false,
-  "NSStatusItem VisibleCC codexbar-merged": true
+  "NSStatusItem VisibleCC codexbar-merged": true,
+  "mergeIcons": false,
+  "lastMergeIcons": false,
+  "menuBarLayoutPrimaryLabel": "providerName",
+  "storedMenuBarLayout": {
+    "lines": [
+      [
+        {
+          "icon": {}
+        },
+        {
+          "providerName": {}
+        },
+        {
+          "space": {}
+        },
+        {
+          "percent": {
+            "window": "automatic"
+          }
+        }
+      ]
+    ]
+  }
 }

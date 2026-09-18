@@ -8,7 +8,7 @@ Shareable macOS setup for [CodexBar](https://github.com/steipete/CodexBar) with 
 | Dollars / cost | **Off** |
 | Menu bar | **Percent** |
 | Providers | **Claude → Cursor → Codex** (Codex at bottom) |
-| Merged icon | On |
+| Icons | **Separate** Claude / Cursor / Codex with **provider name** + % |
 
 CodexBar itself stays upstream (`brew install --cask codexbar`). This repo only installs it and applies prefs.
 
